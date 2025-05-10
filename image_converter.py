@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from pathlib import Path
+import os
+import sys
 
 IMAGE_FORMAT_TO_EXTENSION={
     'jpeg' : 'jpeg',
@@ -14,6 +16,15 @@ IMAGE_FORMAT_TO_EXTENSION={
     'ico' : 'ICO',
     'dib' : 'DIB'
 }
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def convert_image_to_grayscale(filepath, image_format, save_dir, result_path_label_text_variable):
     try:
@@ -62,6 +73,22 @@ class CustomCombobox(ttk.Combobox):
         super().__init__(master, textvariable=self.text_variable, values=values, state='readonly')
         super().pack(side=pack_side)
 
+def destroy_widget_event(event):
+    event.widget.destroy()
+
+def popup_license():
+    license_data = '' 
+    license_path = resource_path('LICENSE')
+    with open(license_path, 'r') as file:
+        license_data = file.read()
+    license_popup_window = tk.Toplevel()
+    license_popup_window.grab_set()
+    license_popup_window.title("License")
+
+    CustomLabel(license_popup_window, tk.TOP, license_data)
+    CustomButton(license_popup_window, tk.BOTTOM, "Close", license_popup_window.destroy)
+    license_popup_window.bind("<Escape>", destroy_widget_event)
+
 def main_window():
     window = tk.Tk()
     window.title("Image Converter")
@@ -82,6 +109,9 @@ def main_window():
     result_path_label = CustomLabel(convert_image_frame, tk.BOTTOM)
     convert_image_button = CustomButton(convert_image_frame, tk.TOP, 'Convert!', lambda: convert_image_to_grayscale(selected_file_label.text_variable.get(), image_type_combobox.get(), selected_save_dir_label.text_variable.get(), result_path_label.text_variable))
 
+    license_frame = CustomFrame(window, tk.TOP)
+    license_button = CustomButton(license_frame, tk.BOTTOM, 'License', popup_license)
+    
     return window
 
 if __name__ == "__main__":
