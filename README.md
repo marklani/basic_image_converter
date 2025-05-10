@@ -2,16 +2,12 @@
 Basic image converter using python Pillow module
 
 # Requirements:
-Python
-
-pillow==11.2.1
-
-pyinstaller==6.13.0
+```pip install -r requirements.txt```
 
 # How to use:
 
-## Installation:
-```pyinstaller image_converter.py --onefile --name image_converter --noconsole```
+## 1. Installation:
+```pyinstaller image_converter.py --onefile --add-data="LICENSE:." --name image_converter --noconsole```
 
-## Run with python:
+## 2. Run with python:
 ```python image_converter.py```
